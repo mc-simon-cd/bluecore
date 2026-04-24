@@ -13,6 +13,7 @@
 * [x] **Backend Başlatma:** Rust tabanlı core, engines ve api klasör yapısı kuruldu.
 * [x] **Frontend Çerçevesi:** React tabanlı Browser Shell UI (TabBar, AddressBar) taslakları oluşturuldu.
 * [x] **Dokümantasyon:** Mimari ve motor değiştirme protokolleri yazıldı.
+* [x] **Lisans:** Apache 2.0'dan MPL-2.0'a geçiş yapıldı.
 
 ### ⚙️ Phase 2: Çekirdek Sistem Entegrasyonu
 * [x] **Engine Manager:** Motorların boot/shutdown/navigate ve switch mantığı kuruldu.

@@ -1,5 +1,5 @@
 # BlueCore Architecture
-**License:** Apache 2.0 | **Project:** Simon Project | **Son Güncelleme:** 24 Nisan 2026
+**License:** MPL-2.0 | **Project:** Simon Project | **Son Güncelleme:** 24 Nisan 2026
 
 ---
 

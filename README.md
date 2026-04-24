@@ -10,7 +10,7 @@ BlueCore, Rust ve React ile yazılmış yeni nesil, modüler bir tarayıcı proj
 
 | Alan | Bilgi |
 |---|---|
-| **Lisans** | Apache License 2.0 |
+| **Lisans** | Mozilla Public License 2.0 |
 | **Proje** | Simon Project |
 | **Durum** | Phase 3 – Modüler API & Kimlik Sistemleri |
 | **Son Güncelleme** | 24 Nisan 2026 |
