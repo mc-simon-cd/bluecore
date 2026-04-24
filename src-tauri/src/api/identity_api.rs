@@ -2,7 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Part of the Simon Project BlueCore Browser
 
-use std::sync::Mutex;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use tauri::State;
 use crate::identity::SessionManager;
 use serde::Serialize;
@@ -14,8 +15,8 @@ pub struct SessionInfo {
 }
 
 #[tauri::command]
-pub async fn get_session(session_manager: State<'_, Mutex<SessionManager>>) -> Result<SessionInfo, String> {
-    let manager = session_manager.lock().map_err(|e| e.to_string())?;
+pub async fn get_session(session_manager: State<'_, Arc<Mutex<SessionManager>>>) -> Result<SessionInfo, String> {
+    let manager = session_manager.lock().await;
     let session = manager.get_session();
     Ok(SessionInfo {
         session_id: session.session_id.clone(),
@@ -24,15 +25,15 @@ pub async fn get_session(session_manager: State<'_, Mutex<SessionManager>>) -> R
 }
 
 #[tauri::command]
-pub async fn login(username: String, session_manager: State<'_, Mutex<SessionManager>>) -> Result<(), String> {
-    let mut manager = session_manager.lock().map_err(|e| e.to_string())?;
+pub async fn login(username: String, session_manager: State<'_, Arc<Mutex<SessionManager>>>) -> Result<(), String> {
+    let mut manager = session_manager.lock().await;
     manager.set_user(username);
     Ok(())
 }
 
 #[tauri::command]
-pub async fn logout(session_manager: State<'_, Mutex<SessionManager>>) -> Result<(), String> {
-    let mut manager = session_manager.lock().map_err(|e| e.to_string())?;
+pub async fn logout(session_manager: State<'_, Arc<Mutex<SessionManager>>>) -> Result<(), String> {
+    let mut manager = session_manager.lock().await;
     manager.logout();
     Ok(())
 }

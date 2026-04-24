@@ -12,10 +12,12 @@ impl BrowserEngine for ChromiumEngine {
         println!("Booting Chromium engine (Blink/V8)...");
         Ok(())
     }
-    fn shutdown(&mut self) {
+    fn shutdown(&mut self) -> Result<(), String> {
         println!("Shutting down Chromium engine.");
+        Ok(())
     }
-    fn navigate(&self, url: &str) {
+    fn navigate(&self, url: &str) -> Result<(), String> {
         println!("Chromium navigating to: {}", url);
+        Ok(())
     }
 }

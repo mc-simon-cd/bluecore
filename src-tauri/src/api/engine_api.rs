@@ -2,7 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Part of the Simon Project BlueCore Browser
 
-use std::sync::Mutex;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use std::fs;
 use tauri::State;
 use crate::core::engine_manager::EngineManager;
@@ -12,12 +13,12 @@ use crate::engines::chromium_fork::ChromiumEngine;
 use crate::config::load_engine_config;
 
 #[tauri::command]
-pub async fn switch_engine(name: String, engine_manager: State<'_, Mutex<EngineManager>>) -> Result<String, String> {
-    let mut manager = engine_manager.lock().map_err(|e| e.to_string())?;
+pub async fn switch_engine(name: String, engine_manager: State<'_, Arc<Mutex<EngineManager>>>) -> Result<String, String> {
+    let mut manager = engine_manager.lock().await;
     
     match name.to_lowercase().as_str() {
         "tauri" => {
-            manager.switch(Box::new(TauriEngine) as Box<dyn BrowserEngine + Send + Sync>);
+            manager.switch(Box::new(TauriEngine) as Box<dyn BrowserEngine + Send + Sync>)?;
             Ok("Switched to Tauri engine".to_string())
         },
         "chromium" => {
@@ -35,7 +36,7 @@ pub async fn switch_engine(name: String, engine_manager: State<'_, Mutex<EngineM
             }
 
             if activated {
-                manager.switch(Box::new(ChromiumEngine) as Box<dyn BrowserEngine + Send + Sync>);
+                manager.switch(Box::new(ChromiumEngine) as Box<dyn BrowserEngine + Send + Sync>)?;
                 Ok("Switched to Chromium engine".to_string())
             } else {
                 Err("Chromium engine is not activated. See docs/enable_chromium.md".to_string())

@@ -5,6 +5,6 @@
 pub trait BrowserEngine: Send + Sync {
     fn name(&self) -> &str;
     fn boot(&mut self) -> Result<(), String>;
-    fn shutdown(&mut self);
-    fn navigate(&self, url: &str);
+    fn shutdown(&mut self) -> Result<(), String>;
+    fn navigate(&self, url: &str) -> Result<(), String>;
 }

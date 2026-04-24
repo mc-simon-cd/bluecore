@@ -8,11 +8,13 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { TabBar } from './TabBar';
 import { AddressBar } from './AddressBar';
 import { useModules } from '../../hooks/useModules';
+import { useTabs } from '../../hooks/useTabs';
 import { ModuleRegistry } from '../modules/registry';
 import { ModuleCenter } from '../../components/Settings/ModuleCenter';
 
 export function BrowserShell() {
-    const { modules, toggleModule } = useModules();
+    const { modules } = useModules();
+    const { tabs, activeTab, addTab, removeTab, switchTab, updateTabUrl } = useTabs();
     const [currentView, setCurrentView] = React.useState<'browser' | 'settings'>('browser');
 
     const handleNavigate = async (url: string) => {
@@ -21,12 +23,24 @@ export function BrowserShell() {
             return;
         }
         setCurrentView('browser');
-        await invoke('create_tab', { url });
+        if (activeTab) {
+            try {
+                await invoke('bc_handle_navigation', { tabId: activeTab.id, url });
+                updateTabUrl(activeTab.id, url);
+            } catch (error) {
+                console.error("Navigation Bridge Error:", error);
+            }
+        }
     };
 
     return (
         <div id="bluecore-shell" className="flex flex-col h-screen bg-bg-primary overflow-hidden">
-            <TabBar />
+            <TabBar
+                tabs={tabs}
+                onAddTab={() => addTab()}
+                onRemoveTab={removeTab}
+                onSwitchTab={switchTab}
+            />
             <AddressBar onNavigate={handleNavigate} />
 
             <div className="shell-body flex-1 flex overflow-hidden">
@@ -34,8 +48,12 @@ export function BrowserShell() {
                     {currentView === 'settings' ? (
                         <ModuleCenter />
                     ) : (
-                        <div className="flex h-full items-center justify-center text-text-muted italic">
-                            WebView Engine Active
+                        <div className="flex h-full items-center justify-center text-text-muted italic flex-col gap-4">
+                            <div className="text-4xl opacity-20 font-bold">BlueCore</div>
+                            <div className="flex flex-col items-center gap-1">
+                                <span className="text-sm border border-white/5 px-3 py-1 rounded-full bg-white/5">{activeTab?.url || 'No Active Tab'}</span>
+                                <span className="text-xs opacity-40">WebView Engine Active</span>
+                            </div>
                         </div>
                     )}
                 </main>

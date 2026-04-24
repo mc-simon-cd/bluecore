@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Part of the Simon Project BlueCore Browser
 
+pub mod ui_config_manager;
 pub mod engine_manager;
 pub mod tab_manager;
 pub mod navigation;

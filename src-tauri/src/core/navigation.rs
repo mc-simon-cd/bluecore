@@ -5,7 +5,12 @@
 // Navigation logic
 pub struct Navigation;
 impl Navigation {
-    pub fn navigate(&self, url: &str) {
-        println!("Navigating to {}", url);
+    pub fn navigate(&self, url: &str) -> Result<(), String> {
+        let trimmed = url.trim();
+        if trimmed.is_empty() {
+            return Err("Navigation URL cannot be empty".to_string());
+        }
+        println!("Navigating to {}", trimmed);
+        Ok(())
     }
 }

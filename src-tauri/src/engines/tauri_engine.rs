@@ -12,10 +12,12 @@ impl BrowserEngine for TauriEngine {
         println!("Booting Tauri engine (Native WebView)...");
         Ok(())
     }
-    fn shutdown(&mut self) {
+    fn shutdown(&mut self) -> Result<(), String> {
         println!("Shutting down Tauri engine.");
+        Ok(())
     }
-    fn navigate(&self, url: &str) {
+    fn navigate(&self, url: &str) -> Result<(), String> {
         println!("Tauri navigating to: {}", url);
+        Ok(())
     }
 }

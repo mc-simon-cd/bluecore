@@ -13,9 +13,13 @@ impl EngineManager {
         Self { active_engine: default }
     }
 
-    pub fn switch(&mut self, new_engine: Box<dyn BrowserEngine + Send + Sync>) {
-        self.active_engine.shutdown();
+    pub fn switch(&mut self, new_engine: Box<dyn BrowserEngine + Send + Sync>) -> Result<(), String> {
+        self.active_engine.shutdown()?;
         self.active_engine = new_engine;
-        let _ = self.active_engine.boot();
+        self.active_engine.boot()
+    }
+
+    pub fn navigate(&self, url: &str) -> Result<(), String> {
+        self.active_engine.navigate(url)
     }
 }

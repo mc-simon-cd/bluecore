@@ -1,92 +1,63 @@
-# 🚀 BlueCore Project Progress
-**License:** Apache 2.0 | **Project:** Simon Project
+# 🚀 BlueCore Gelişim Yol Haritası (Roadmap)
+
+**Proje:** BlueCore Browser Shell
+**Güncel Durum:** Phase 3 (Modüler API ve Kimlik Sistemleri)
+**Son Güncelleme:** 24 Nisan 2026
 
 ---
 
-## 🗓️ 2026-04-17 — Milestone Update
+## ✅ Tamamlanan Aşamalar
 
-### 🧱 Phase 1 & Phase 2 — COMPLETED
+### 🧱 Phase 1: Mimari Temeller
+* [x] **Dual-Engine Stratejisi:** Tauri (OS-native) ve Chromium (Standby) yapısı tanımlandı.
+* [x] **Backend Başlatma:** Rust tabanlı core, engines ve api klasör yapısı kuruldu.
+* [x] **Frontend Çerçevesi:** React tabanlı Browser Shell UI (TabBar, AddressBar) taslakları oluşturuldu.
+* [x] **Dokümantasyon:** Mimari ve motor değiştirme protokolleri yazıldı.
 
-* [x] Defined **Dual-Engine Architecture**
-  * Tauri (active default engine)
-  * Chromium Fork (inactive standby subsystem)
-* [x] Initialized **Rust/Tauri Backend Structure**
-  * core/
-  * engines/
-  * modules/
-  * api/
-  * config/
-  * security/
-  * storage/
-* [x] Initialized **Frontend Architecture (React)**
-  * Browser shell layout
-  * UI component separation (TabBar, AddressBar, Views)
-  * State management layer prepared
-* [x] Implemented **Engine Manager Concept**
-  * Abstract engine switching layer designed
-  * Tauri ↔ Chromium fork routing logic defined
-* [x] Implemented **Feature Flag System Design**
-  * engines.json structure defined
-  * Chromium activation controlled via config + trigger file
-* [x] Created **System Documentation**
-  * architecture.md
-  * engine_switching.md
-  * enable_chromium.md
-  * module_system.md
+### ⚙️ Phase 2: Çekirdek Sistem Entegrasyonu
+* [x] **Engine Manager:** Motorların boot/shutdown ve navigasyon mantığı kuruldu.
+* [x] **EngineTrait Uygulaması:** Motorlar arası derin soyutlama (Send + Sync) sağlandı.
+* [x] **Feature Flag Sistemi:** engines.json üzerinden motor kontrolü aktif edildi.
 
 ---
 
-## ⚙️ Current System State
+## 🚧 Mevcut Aşama: Phase 3 (Modüler API & Identity)
 
-### 🟢 Active Engine
-* Tauri WebView engine (default runtime)
+### 🔵 Devam Eden Görevler
+* [/] **BlueCore Internal API:** Rust ve JS arasındaki köprü (Bridge) stabilizasyonu.
+* [/] **Thread-Safe State Management:** Sistem yöneticilerinin Mutex sarmalayıcıları ile güçlendirilmesi.
+* [/] **Identity Layer (Kimlik Katmanı):** Kullanıcı oturum yönetimi ve güvenli depolama entegrasyonu.
+* [/] **Build System:** Arch Linux uyumluluğu ve modül konsolidasyonu.
 
-### 🔴 Inactive Engine
-* Chromium Fork (fully included, not running)
-
-### 🧠 Core Systems
-* Engine Manager: OPERATIONAL
-* Module System: READY FOR IMPLEMENTATION
-* API Layer: OPERATIONAL (Rust ↔ React Bridge)
-* Identity System: OPERATIONAL (Session Manager)
-* Extension System: NOT STARTED
-* Security Layer: INITIAL DESIGN ONLY
+### 🎯 Yakındaki Hedefler (Milestones)
+* [ ] İlk dahili modülün (Internal Module) çalışma zamanı (runtime) entegrasyonu.
+* [ ] Motor değiştirme sırasında "State Migration" (durum taşıma) prototipinin testi.
 
 ---
 
-## 🚀 Current Status
+## 🚀 Gelecek Hedefler
 
-## 🧩 Phase 3 — MODULAR API & IDENTITY (IN PROGRESS)
+### 🧩 Phase 4: Modüler Ekosistem & Güvenlik
+* [ ] **Plugin System:** Üçüncü taraf modüller için kısıtlı API erişimi.
+* [ ] **AI & Privacy Modules:** Yapay zeka destekli asistan ve reklam engelleyici modülleri.
+* [ ] **Security Hardening:** Kum havuzu (Sandboxing) politikalarının sıkılaştırılması.
+* [ ] **Network Layer:** Proxy ve VPN desteği için özel ağ katmanı.
 
-### ✅ Completed in Phase 3
-* [x] **Build BlueCore Internal API** (Rust ↔ JS bridge)
-* [x] **Define module communication protocol** (Engine Trait)
-* [x] **Implement identity system** (User/Session layer)
-* [x] **Stabilize Build System** (Arch Linux compatibility & Module consolidation)
-
-### 🎯 Pending Goals
-* [ ] Start module runtime system
-* [ ] Enable controlled module activation system
-* [ ] Implement first set of internal modules
+### 🌟 Phase 5: Üretim ve Optimizasyon
+* [ ] **Chromium Validation:** Chromium fork'un tam kapasite stabilite testleri.
+* [ ] **Cross-Platform Support:** Windows ve macOS için özel derleme optimizasyonları.
+* [ ] **Beta Launch:** İlk topluluk sürümünün yayınlanması.
 
 ---
 
-## 💡 Architectural Note
-> BlueCore is now transitioning from **architecture design phase**
-> into **functional system implementation phase**
+## ⚠️ Teknik Borçlar ve Notlar
+Detaylı takip için [tech_debt.md](file:///home/can/Masaüstü/projeler/bluecore/tech_debt.md) dosyasına bakınız.
+
+* **Performans:** Tauri ve Chromium geçişi arasındaki gecikme (latency) minimize edilmeli.
+* **Bellek Yönetimi:** Chromium bekleme modundayken (standby) kaynak tüketimi sıfıra yakın tutulmalı.
+* **Güvenlik:** Rust tarafındaki unsafe bloklar periyodik olarak denetlenmeli.
 
 ---
 
-## ⚠️ Constraints Reminder
-* Chromium Fork remains inactive
-* Tauri remains default execution engine
-* All modules must pass through BlueCore API layer
-* No direct engine coupling allowed
-
----
-
-## 🧭 Project Vision Status
-* 🧱 Architecture: COMPLETED
-* ⚙️ Core Engine Setup: COMPLETED
-* 🧩 Modularity Design: STARTING IMPLEMENTATION
-* 🚀 Product Phase: NOT YET STARTED
+## 🧭 Vizyon Notu
+BlueCore, düşük kaynak tüketimiyle günlük kullanımda Tauri'yi, ağır iş yüklerinde ise Chromium'u kullanarak tarayıcı dünyasında "dinamik ölçeklenebilirlik" standardını belirlemeyi hedefler.
