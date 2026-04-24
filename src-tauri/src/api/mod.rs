@@ -9,3 +9,4 @@ pub mod modules;
 pub mod ui_api;
 pub mod content_api;
 pub mod navigation_api;
+pub mod split_api;

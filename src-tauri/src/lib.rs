@@ -17,6 +17,7 @@ use tokio::sync::Mutex;
 use crate::core::engine_manager::EngineManager;
 use crate::core::tab_manager::TabManager;
 use crate::core::ui_config_manager::UIConfigManager;
+use crate::core::split_view_manager::SplitViewManager;
 use crate::engines::tauri_engine::TauriEngine;
 use crate::identity::SessionManager;
 
@@ -27,6 +28,7 @@ pub struct BlueCoreState {
     pub tab_manager: Arc<Mutex<TabManager>>,
     pub session_manager: Arc<Mutex<SessionManager>>,
     pub ui_config: Arc<Mutex<UIConfigManager>>,
+    pub split_view_manager: Arc<Mutex<SplitViewManager>>,
 }
 
 pub fn run() {
@@ -34,6 +36,7 @@ pub fn run() {
     let tab_manager = TabManager::new();
     let session_manager = SessionManager::new();
     let ui_config_manager = UIConfigManager::new();
+    let split_view_manager = SplitViewManager::new();
     let module_registry = ModuleRegistry::new();
 
     // Register initial modules
@@ -46,6 +49,7 @@ pub fn run() {
         tab_manager: Arc::new(Mutex::new(tab_manager)),
         session_manager: Arc::new(Mutex::new(session_manager)),
         ui_config: Arc::new(Mutex::new(ui_config_manager)),
+        split_view_manager: Arc::new(Mutex::new(split_view_manager)),
     };
 
     tauri::Builder::default()
@@ -53,6 +57,7 @@ pub fn run() {
         .manage(state.tab_manager)
         .manage(state.session_manager)
         .manage(state.ui_config)
+        .manage(state.split_view_manager)
         .manage(module_registry)
 
         .invoke_handler(tauri::generate_handler![
@@ -78,6 +83,12 @@ pub fn run() {
             api::content_api::start_tts_engine,
             api::content_api::speak_content,
             api::navigation_api::bc_handle_navigation,
+            api::split_api::enable_split_view,
+            api::split_api::update_split_focus,
+            api::split_api::resize_split_panes,
+            api::split_api::swap_split_panes,
+            api::split_api::disable_split_view,
+            api::split_api::get_split_view_state,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
