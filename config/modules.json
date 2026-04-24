@@ -1,0 +1,12 @@
+{
+    "modules": [
+        {
+            "id": "privacy-shield",
+            "enabled": true,
+            "priority": 100,
+            "permissions": [
+                "network_interception"
+            ]
+        }
+    ]
+}

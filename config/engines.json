@@ -1,0 +1,8 @@
+{
+    "active_engine": "tauri",
+    "chromium_fork": {
+        "enabled": false,
+        "activation_mode": "manual",
+        "trigger_file": "docs/enable_chromium.md"
+    }
+}
