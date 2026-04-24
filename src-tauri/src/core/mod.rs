@@ -4,6 +4,8 @@
 
 pub mod ui_config_manager;
 pub mod split_view_manager;
+pub mod performance_manager;
+pub mod security_manager;
 pub mod engine_manager;
 pub mod tab_manager;
 pub mod navigation;
