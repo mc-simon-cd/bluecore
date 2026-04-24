@@ -43,20 +43,23 @@ pub struct BlueCoreState {
 
 ## 3. API Kategorileri (Core Modules)
 
-### 📂 Navigation & Tab API
-* `open_tab(url, engine)`: Belirlenen motor (Tauri/Chromium) ile yeni sekme açar.
-* `set_vertical_tabs(enabled)`: **(2026 Yeni)** Sekme listesini dikey (sol panel) veya yatay mod arasında değiştirir.
+### 📂 Navigation & Tab API (Dikey Sekme Odaklı)
+* `open_tab(url, engine)`: Belirlenen motor ile yeni sekme açar.
+* `set_vertical_tabs(enabled)`: Sekmeleri sol tarafa dikey liste olarak taşır.
+* `set_tab_sidebar_collapsed(collapsed)`: Sadece faviconların görüneceği şekilde sütunu daraltır (ekran tasarrufu).
+* `group_tabs_by_domain()`: Aynı siteye ait sekmeleri otomatik gruplar ve daraltılabilir/genişletilebilir hale getirir.
 * `close_tab(id)`: Sekmeyi kapatır ve kaynakları serbest bırakır.
 
-### 🎨 Customization API (Yeni Sekme & Tema)
-* `get_ntp_config()`: Yeni sekme sayfası (NTP) ayarlarını (Arka plan, kısayollar, tema) getirir.
-* `update_ntp_setting(key, value)`: Arka plan resmi, kısayol görünürlüğü veya otomatik renk önerilerini günceller.
-* `set_browser_theme(mode)`: light, dark veya system temaları arasında geçiş yapar.
+### 🎨 Customization API (NTP & Tema)
+* `get_ntp_config()`: Arka plan (özel resim/preset), kısayol ve tema ayarlarını getirir.
+* `manage_ntp_shortcuts(action, site_data)`: Kısayolları ekler, sabitler, yeniden düzenler veya kaldırır.
+* `set_ntp_background(source_path)`: Kullanıcı resmi veya sistem duvar kağıdını atar.
+* `set_browser_theme(mode, accent_color)`: Açık/koyu mod geçişi ve arka plana göre otomatik renk önerisi sunar.
 
 ### 📖 Content & Reader Mode API
-* `toggle_reader_mode(id, active)`: **(2026 Yeni)** Sayfadaki reklam ve kalabalığı temizleyerek "Sürükleyici Okuma Modu"nu başlatır.
-* `get_reader_settings()`: Gece modu, sepya, yazı tipi boyutu gibi kişiselleştirme verilerini yönetir.
-* `speak_content(id)`: Gelişmiş "Metinden Sese" (TTS) özelliğini kullanarak makaleyi seslendirir.
+* `toggle_reader_mode(id, active)`: Reklam ve yan panelleri temizleyerek sadece metin ve ana görsellere odaklanır.
+* `set_reader_preferences(font_size, theme_style)`: Gece modu, sepya veya özel yazı tipi boyutlarını uygular.
+* `start_tts_engine(id)`: Metinden Sese (TTS) özelliğini yüksek kaliteli seslendirme ile başlatır.
 
 ### 🔐 Identity & Security API
 * `get_session()`: Aktif kullanıcı oturum bilgilerini döner.
@@ -69,25 +72,23 @@ pub struct BlueCoreState {
 ### Rust Tarafı (Command Definition)
 ```rust
 #[tauri::command]
-pub async fn bc_toggle_reader_mode(
+pub async fn bc_toggle_vertical_tabs(
     state: State<'_, Arc<Mutex<UIConfigManager>>>,
-    tab_id: String,
-    active: bool
-) -> Result<ReaderState, String> {
+    enabled: bool
+) -> Result<(), String> {
     let mut config = state.lock().await;
-    // İçerik temizleme ve DOM manipülasyon sinyalini gönder
-    config.set_reader_mode(tab_id, active).await
+    config.update_layout_mode(enabled).await
 }
 ```
 
 ### TypeScript Tarafı (Service Wrapper)
 ```typescript
 export const BlueCoreAPI = {
-  customizeNTP: async (settings: Partial<NTPSettings>): Promise<void> => {
-    await invoke('bc_update_ntp_setting', { settings });
+  toggleVerticalTabs: async (enable: boolean) => {
+    await invoke('bc_toggle_vertical_tabs', { enabled: enable });
   },
-  toggleVerticalView: async (enable: boolean): Promise<void> => {
-    await invoke('bc_set_vertical_tabs', { enabled: enable });
+  configureReader: async (settings: ReaderSettings) => {
+    await invoke('bc_set_reader_preferences', { settings });
   }
 };
 ```
@@ -96,22 +97,24 @@ export const BlueCoreAPI = {
 
 ## 5. Stabilizasyon ve Hata Yönetimi Stratejileri
 
-* **State Synchronization:** UI tarafındaki dikey sekme görünümü veya tema ayarları, Rust tarafındaki `UIConfigManager` ile her zaman senkronize olmalıdır.
-* **Resource Freezing:** Okuma modu aktifken, arka plandaki gereksiz JS betikleri dondurularak CPU tasarrufu sağlanmalıdır.
-* **Circuit Breaker:** Eğer bir tema veya arka plan yüklemesi sistem hatasına yol açarsa, API otomatik olarak "Default Light" temasına dönmelidir.
-* **Logging & Audit:** Her API çağrısı, güvenlik denetimi için `security/audit.log` dosyasına kaydedilmelidir.
+* **Layout Sync:** Dikey sekme moduna geçişte WebView alanı gecikme olmaksızın yeniden boyutlandırılmalıdır.
+* **Resource Freezing:** Okuma modu aktifken arka plan scriptleri dondurularak CPU tasarrufu maksimize edilir.
+* **NTP Persistence:** Kullanıcı tanımlı kısayollar ve arka planlar SQLite üzerinde asenkron olarak yedeklenir.
+* **Circuit Breaker:** Tema yüklemesi hata verirse API otomatik olarak "Default Light" temasına döner.
+* **Logging & Audit:** Her API çağrısı `security/audit.log` dosyasına kaydedilir.
 
 ---
 
 ## 6. Phase 3 İçin Kritik Kontrol Listesi
 
 - [x] Tüm API fonksiyonları için `Result<T, E>` dönüş tipi zorunlu kılındı mı?
-- [x] UI'dan gelen URL girdileri sanitize ediliyor mu? (XSS ve Command Injection önleme)
-- [x] `EngineTrait` üzerinden geçen komutlar her iki motor için de tutarlı sonuç üretiyor mu?
-- [ ] Yeni Sekme özelleştirmeleri (arka plan/kısayollar) yerel veritabanında (SQLite) kalıcı hale getirildi mi?
-- [ ] Dikey Sekmeler aktifken içerik alanının (WebView) boyutu dinamik olarak yeniden hesaplanıyor mu?
-- [ ] Sürükleyici Okuma Modu için DOM temizleme algoritması (Sanitization) performansı optimize edildi mi?
-- [ ] Tüm `state.lock()` operasyonları için bir zaman aşımı (timeout) mekanizması düşünüldü mü?
+- [x] URL girdileri sanitize ediliyor mu? (XSS ve Command Injection önleme)
+- [x] `EngineTrait` komutları her iki motor için tutarlı sonuç üretiyor mu?
+- [x] Thread-safe state: `tokio::sync::Mutex` ile `Arc<Mutex<T>>` deseni uygulandı mı?
+- [ ] Dikey sekmelerde uzun başlıklar için "tooltip" veya tam metin görünümü optimize edildi mi?
+- [ ] Okuma Modu'nda görsel medya (video/resim) hiyerarşisi korunuyor mu?
+- [ ] NTP kısayolları "En Çok Ziyaret Edilenler" algoritması ile senkronize mi?
+- [ ] Tüm `state.lock()` operasyonları için zaman aşımı (timeout) mekanizması eklendi mi?
 
 ---
 *Son Güncelleme: 24 Nisan 2026*

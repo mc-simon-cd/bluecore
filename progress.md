@@ -23,11 +23,12 @@
 
 ## 🚧 Mevcut Aşama: Phase 3 (Modüler API & Identity)
 
-### 🔵 Devam Eden Görevler
-* [/] **BlueCore Internal API:** Rust ve JS arasındaki köprü (Bridge) stabilizasyonu.
-* [/] **Thread-Safe State Management:** Sistem yöneticilerinin Mutex sarmalayıcıları ile güçlendirilmesi.
-* [/] **Identity Layer (Kimlik Katmanı):** Kullanıcı oturum yönetimi ve güvenli depolama entegrasyonu.
-* [/] **Build System:** Arch Linux uyumluluğu ve modül konsolidasyonu.
+### 🔵 Tamamlanan ve Devam Eden Görevler
+* [x] **BlueCore Internal API:** Rust ve JS arasındaki köprü (Bridge) stabilizasyonu ve 2026 özellik setinin entegrasyonu.
+* [x] **Thread-Safe State Management:** Sistem yöneticilerinin `tokio::sync::Mutex` ile güçlendirilmesi.
+* [x] **New Tab & Navigation Fix:* Dinamik sekme yönetimi ve navigasyon bridge'i tamamlandı.
+* [/] **Identity Layer (Kimlik Katmanı):** Kullanıcı oturum yönetimi ve güvenli depolama entegrasyonu (Devam ediyor).
+* [x] **Build System:** Arch Linux uyumluluğu ve modül konsolidasyonu doğrulandı.
 
 ### 🎯 Yakındaki Hedefler (Milestones)
 * [ ] İlk dahili modülün (Internal Module) çalışma zamanı (runtime) entegrasyonu.
